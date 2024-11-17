@@ -71,3 +71,46 @@ footer {
     position: fixed;
     bottom: 0;
 }
+.menu-toggle {
+    background-color: transparent;
+    color: white;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    position: fixed;
+    top: 15px;
+    left: 20px;
+}
+.popup-menu {
+    position: fixed;
+    margin-top: 60px;
+    left: 0px;
+    width: 250px;
+    height: 80%;
+    display: none;
+    align-items: left;
+    justify-content: left;
+    z-index: 100;
+}
+
+.popup-menu.show {
+    display: flex;
+}
+
+.popup-content {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup-content nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
