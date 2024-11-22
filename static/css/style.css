@@ -78,7 +78,7 @@ footer {
     border: none;
     cursor: pointer;
     position: fixed;
-    top: 15px;
+    top: 5px;
     left: 20px;
 }
 .popup-menu {
@@ -113,4 +113,108 @@ footer {
     flex-direction: column;
     gap: 1rem;
     margin-top: 1rem;
+}
+.success{
+    padding-top: 0px;
+    color: green;
+}
+.error{
+    padding-top: 0px;
+    color: red;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+li{
+    text-align: left;
+    display: block;
+    background-color: rgb(200, 215, 243);
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+form{
+    margin-bottom: 20px;
+}
+
+.member{
+    color: white;
+    font-size: 15px;
+    position: fixed;
+    top: 2px;
+    right: 10px;
+}
+
+input {
+    padding: 3px;
+    margin-top: 6px;
+    font-size: 12px;
+    text-align: center;
+    display: block;
+}.formtxt{
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+}
+button {
+    margin-top: 10px;
+    padding: 3px 3px;
+    font-size: 13px;
+    display: block;
+    border: none;
+    border-radius: 5px;
+    background-color: lightgreen;
+    color:black;
+    cursor: pointer;
+    text-align: left;
+}
+.inline-text {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+.my-rating {
+    display: flex;
+    font-size: 24px;
+    justify-content: flex-end;
+    gap: 5px;
+    direction: rtl
+}
+.my-rating input {
+    position: absolute;
+    opacity: 0;        
+}
+.my-rating label {
+    cursor: pointer;
+    color: lightgray;
+    transition: color 0.8s;
+}
+.my-rating input:checked ~ label {
+    color: gold;
+}
+.message { font-size: 18px; margin-top: 10px; }
+h3{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+h2{
+    margin-bottom: 20px;
+}
+#login{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+#signup{
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    z-index: 1000;
+}
+a.nlink:link, a.nlink:visited, a.nlink:hover, a.nlink:active {
+    color: inherit;
+    text-decoration: none;
 }
