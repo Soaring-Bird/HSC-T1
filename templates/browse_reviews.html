@@ -2,15 +2,16 @@
 {% block title %}Browse Reviews - MG Reviews{% endblock %}
 {% block content %}
 
-<h2 style="text-align: left;"><u>All Movies</u></h2>
+<h2 class="left"><u>All Movies</u></h2>
 <ul class="review-list">
     {% for ID, title, genre, year, latest_review in items %}
         <a href="{{ url_for('review', id=ID) }}" class="nlink">
-            <li style="list-style: none; padding: 10px; border: 1px solid #ddd; margin-bottom: 5px;">
+            <li class="mg-item">
                 <strong>{{ title }} - {{ year }} - {{ genre }}</strong>
-                <p>Latest review on: {{ latest_review if latest_review else "No reviews yet" }}</p>
+                <p class="latest-review">Latest review on: {{ latest_review if latest_review else "No reviews yet" }}</p>
             </li>
         </a>
     {% endfor %}
 </ul>
+
 {% endblock %}
