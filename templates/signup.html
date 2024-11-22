@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Sign Up - MG Reviews{% endblock %}
+
+{% block content %}
+
+<div class="ui padded center aligned text">
+  <h1 class="ui header">Sign Up</h1>
+  <form method="POST">
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="ui user outline icon"></i>
+        <input type="text" name="username" placeholder="Username" required autofocus>
+      </div>
+    </div>
+    <br>
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="ui mail icon"></i>
+        <input type="email" name="mail" placeholder="Email" required>
+      </div>
+    </div>
+    <br>
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="lock icon"></i>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+    </div>
+    <br>
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="lock icon"></i>
+        <input type="password" name="password_confirmation" placeholder="Password Confirmation" required>
+      </div>
+    </div>
+    <br>
+    <div class="actions">
+      <button class="ui large teal button" type="submit">Sign Up</button>
+    </div>
+  </form>
+  <p>Have an account? <a href="{{ url_for('login') }}">Log In</a></p>
+</div>
+
+{% endblock %}

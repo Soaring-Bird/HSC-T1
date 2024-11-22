@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Login - MG Reviews{% endblock %}
+
+{% block content %}
+<div class="ui padded center aligned text ">
+  <h1 class="ui header">Log In</h1>
+  <br>
+  <form method="POST" action="{{ url_for('login') }}">
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="ui user outline icon input"></i>
+        <input type="text" name="username" placeholder="Username" autofocus="true" required>
+      </div>
+    </div>
+    <br>
+    <div class="field">
+      <div class="ui left icon input">
+        <i class="lock icon"></i>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+    </div>
+    <br>
+    <div class="actions">
+      <button class="ui large teal button" type="submit">Log in</button>
+    </div>
+    <br>
+    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %} Add Movies - MG Reviews {% endblock %}
+{% block content %}
+
+<h2 style="text-align: left;"><u>Add Movies</u></h2>
+<div class="ui form">
+    <form method="POST">
+        <div class="three fields">
+            <div class="field">
+                <label>Movie Name</label>
+                <input type="text" name="name" placeholder="Movie Name" required>
+            </div>
+            <div class="field">
+                <label>Genre</label>
+                <input type="text" name="genre" placeholder="Genre" required>
+            </div>
+            <div class="field">
+                <label>Year</label>
+                <input type="number" name="year" placeholder="Year" required>
+            </div>
+        </div>
+        <button type="submit">Add Movie</button>
+    </form>
+</div>
+
+{% endblock %}
