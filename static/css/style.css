@@ -218,3 +218,62 @@ a.nlink:link, a.nlink:visited, a.nlink:hover, a.nlink:active {
     color: inherit;
     text-decoration: none;
 }
+li{
+    text-align: left;
+    display: block;
+    background-color: rgb(200, 215, 243);
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+.review-prompt {
+    margin-bottom: 4px;
+}
+
+.comment-textarea {
+    height: 100px;
+}
+
+.review-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: white;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-label {
+    background-color: rgb(226, 235, 236);
+}
+
+.review-rating {
+    color: rgb(110, 109, 98);
+    font-size: 1.2em;
+    padding: 0;
+    margin: 0;
+}
+
+.review-timestamp {
+    margin: 0;
+    color: grey;
+}
+.left {
+    text-align: left;
+}
+.mg-item {
+    list-style: none;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+.latest-review {
+    margin-top: 5px;
+}
+.form-button{
+    margin: 0px;
+}
