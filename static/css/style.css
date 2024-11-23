@@ -90,7 +90,7 @@ footer {
     display: none;
     align-items: left;
     justify-content: left;
-    z-index: 100;
+    z-index: 10000;
 }
 
 .popup-menu.show {
@@ -272,7 +272,7 @@ li{
     margin-bottom: 5px;
 }
 .latest-review {
-    margin-top: 5px;
+    margin-top: 10px !important;
 }
 .form-button{
     margin: 0px;
