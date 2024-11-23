@@ -3,6 +3,9 @@
 {% block content %}
 
 <h2 class="left"><u>Add Movies</u></h2>
+{% if message %}
+    <p class="{{ category }}">{{ message }}</p>
+{% endif %}
 <div class="ui form">
     <form method="POST">
         <div class="three fields">

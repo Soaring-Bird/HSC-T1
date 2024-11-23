@@ -6,6 +6,9 @@
 <hr>
 <p class="review-prompt">What did you think of it?</p>
 <form action="{{ url_for('add_review', id=item) }}" method="post" class="ui form">
+    {% if message %}
+        <p class="formtxt {{ category }}">{{ message }}</p>
+    {% endif %}
     <p class="formtxt">Select a star rating here</p>
     <div class="my-rating">
         <input type="radio" name="stars" id="star5" value="5" required="required"><label for="star5">★</label>

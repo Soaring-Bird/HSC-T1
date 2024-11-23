@@ -5,6 +5,9 @@
 {% block content %}
 <div class="ui padded center aligned text ">
   <h1 class="ui header">Log In</h1>
+  {% if message %}
+    <p class="{{ category }}">{{ message }}</p>
+  {% endif %}
   <br>
   <form method="POST" action="{{ url_for('login') }}">
     <div class="field">
