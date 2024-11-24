@@ -2,6 +2,28 @@
 {% block title %}Browse Reviews - MG Reviews{% endblock %}
 {% block content %}
 
+<div class="ui labeled teal icon top right pointing dropdown button" style="text-align: left;">
+    <i class="filter icon"></i>
+    <span class="text">Filter Movies</span>
+    <div class="menu">
+        <div class="header">
+            <i class="calendar icon"></i>
+            Filter By Latest Review
+        </div>
+        <a class="item" href="{{ url_for('browse_reviews', filter='10mins') }}">
+            <i class="olive circle icon"></i> Last 10 mins
+        </a>
+        <a class="item" href="{{ url_for('browse_reviews', filter='1hour') }}">
+            <i class="violet circle icon"></i> Last hour
+        </a>
+        <a class="item" href="{{ url_for('browse_reviews', filter='today') }}">
+            <i class="orange circle icon"></i> Today
+        </a>
+        <a class="item" href="{{ url_for('browse_reviews', filter='all') }}">
+            <i class="blue circle icon"></i> All
+        </a>
+    </div>
+</div>
 <h2 class="left"><u>All Movies</u></h2>
 <ul class="review-list">
     {% for ID, title, genre, year, latest_review in items %}

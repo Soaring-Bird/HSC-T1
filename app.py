@@ -54,8 +54,14 @@ def logout():
 
 @app.route('/browse_reviews')
 def browse_reviews():
-    items = query_db("""SELECT t.movieID, t.movieName, t.genre, t.year, MAX(r.timestamp) AS latest_review
-        FROM movies AS t LEFT JOIN mReviews AS r ON t.movieID = r.movieID WHERE 1=1
+    filter_option = request.args.get('filter', None)
+    time_condition = ""
+    if filter_option == "10mins": time_condition = f"AND r.timestamp >= datetime('now', '-10 minutes', 'localtime')"
+    elif filter_option == "1hour": time_condition = f"AND r.timestamp >= datetime('now', '-1 hour', 'localtime')"
+    elif filter_option == "today": time_condition = f"AND date(r.timestamp) = date('now', 'localtime')"
+    else: time_condition == ""
+    items = query_db(f"""SELECT t.movieID, t.movieName, t.genre, t.year, MAX(r.timestamp) AS latest_review
+        FROM movies AS t LEFT JOIN mReviews AS r ON t.movieID = r.movieID WHERE 1=1 {time_condition}
         GROUP BY t.movieID ORDER BY latest_review DESC NULLS LAST""")
     return render_template('browse_reviews.html', items=items)
 
