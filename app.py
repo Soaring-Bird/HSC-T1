@@ -72,10 +72,8 @@ def add():
 @app.route('/review/<int:id>')
 def review(id):
     title, year, genre = query_db("SELECT movieName, year, genre FROM movies WHERE movieID = ?", (id,))[0]
-    if session.get('username'):
-        reviews = query_db("SELECT * FROM mReviews WHERE movieID = ?", (id,))
-    else: # so even if they remove blur css property from css, they still can't see the reviews.
-        reviews = ''
+    # so even if they remove blur css property from css, they still can't see the reviews.
+    reviews = query_db("SELECT * FROM mReviews WHERE movieID = ?", (id,)) if session.get('username') else ''
     return render_template('review.html', main=reviews, heading=f"{title}-{year}-{genre}", 
         message=request.args.get('message'), category=request.args.get('category'), item=id)
 
@@ -87,6 +85,24 @@ def add_review(id):
              (session['username'], int(request.form.get('stars')), request.form['comment'], id), commit=True)
     return redirect(url_for('review', id=id, message="Review added!", category='success'))
 
+@app.route('/delete/<int:id>/<int:review_id>')
+def delete_task(id, review_id):
+    review_user = query_db(f"SELECT user FROM mReviews WHERE id=?", (review_id,))
+    if not review_user or review_user[0][0] != session.get('username'):
+        return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
+    query_db(f"DELETE FROM mReviews WHERE id=?", (review_id,), commit=True)
+    return redirect(url_for('review', id=id, message="Review deleted!", category="success"))
+
+@app.route('/editreview/<int:id>/<int:review_id>', methods=['POST'])
+def edit_review(id, review_id):
+    if not session.get('username'):
+        return redirect(url_for('review', id=id, message="You must sign in to edit reviews!", category="error"))
+    review_user = query_db(f"SELECT user FROM mReviews WHERE id=?", (review_id,))
+    if not review_user or review_user[0][0] != session.get('username'):
+        return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
+    query_db(f"UPDATE mReviews SET comment = ?, stars = ? WHERE id = ?", 
+             (request.form.get('comment'), request.form.get('stars'), review_id), commit=True)
+    return redirect(url_for('review', id=id, message="Review updated!", category="success"))
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

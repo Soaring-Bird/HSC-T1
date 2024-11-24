@@ -44,9 +44,26 @@
                         </div>
                         <p class="review-timestamp">{{ column[5][:-3] }}</p>
                     </div>
-                    <div class="content">
+                    {% if session['username'] == column[1] %}
+                        {% if request.args.get('edit') == column[0] | string %}
+                            <form action="{{ url_for('edit_review', id=item, review_id=column[0]) }}" method="post">
+                                <p>Please reselect the rating:</p>
+                                <div class="ui star rating" data-rating="0" data-max-rating="5"></div>
+                                <input type="hidden" name="stars" id="starsInput">
+                                <textarea name="comment" rows="3" class="edit-textarea">{{ column[3] }}</textarea>
+                                <button type="submit">Save</button>
+                                <a href="{{ url_for('review', id=item) }}">Cancel</a>
+                            </form>
+                        {% else %}
+                            <p>{{ column[3] }}</p>
+                            <div class="extra content">
+                                <a href="{{ url_for('review', id=item, edit=column[0]) }}">Edit</a> | 
+                                <a href="{{ url_for('delete_task', id=item, review_id=column[0]) }}">Delete Review</a>
+                            </div>
+                        {% endif %}
+                    {% else %}
                         <p>{{ column[3] }}</p>
-                    </div>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
