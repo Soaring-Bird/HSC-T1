@@ -72,7 +72,10 @@ def add():
 @app.route('/review/<int:id>')
 def review(id):
     title, year, genre = query_db("SELECT movieName, year, genre FROM movies WHERE movieID = ?", (id,))[0]
-    reviews = query_db("SELECT * FROM mReviews WHERE movieID = ?", (id,))
+    if session.get('username'):
+        reviews = query_db("SELECT * FROM mReviews WHERE movieID = ?", (id,))
+    else: # so even if they remove blur css property from css, they still can't see the reviews.
+        reviews = ''
     return render_template('review.html', main=reviews, heading=f"{title}-{year}-{genre}", 
         message=request.args.get('message'), category=request.args.get('category'), item=id)
 
