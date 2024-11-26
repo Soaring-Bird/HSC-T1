@@ -4,7 +4,7 @@
 
 <div class="ui labeled teal icon top right pointing dropdown button" style="text-align: left;">
     <i class="filter icon"></i>
-    <span class="text">Filter Movies</span>
+    <span class="text">Filter {{session['type'].capitalize()}}s</span>
     <div class="menu">
         <div class="header">
             <i class="calendar icon"></i>
@@ -24,7 +24,7 @@
         </a>
     </div>
 </div>
-<h2 class="left"><u>All Movies</u></h2>
+<h2 class="left"><u>All {{session['type'].capitalize()}}s</u></h2>
 <ul class="review-list">
     {% for ID, title, genre, year, latest_review in items %}
         <a href="{{ url_for('review', id=ID) }}" class="nlink">

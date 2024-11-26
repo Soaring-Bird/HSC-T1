@@ -30,12 +30,11 @@
                 <a class="ui basic blue button" href="{{ url_for('index') }}"><i class="home icon"></i>Home</a>
                 <a class="ui basic blue button" href="{{ url_for('browse_reviews') }}"><i class="file video icon"></i>Browse</a>
                 <a class="ui basic blue button" href="{{ url_for('add') }}"><i class="plus square outline icon"></i>Add</a>
-
-                <form action="{{ url_for('index') }}" method="POST" class="form-button">
-                    <button type="submit" class="ui button teal" name="type" value="movie">Movies</button>
+                <form action="{{ url_for('set_type') }}" method="POST" class="form-button">
+                    <button type="submit" class="ui button {% if session['type']=='movie' %}teal{% endif %}" name="type" value="movie">Movies</button>
                 </form> 
-                <form action="{{ url_for('index') }}" method="POST" class="form-button">
-                    <button type="submit" class="ui button" name="type" value="game">Games</button>
+                <form action="{{ url_for('set_type') }}" method="POST" class="form-button">
+                    <button type="submit" class="ui button {% if session['type']=='game' %}teal{% endif %}" name="type" value="game">Games</button>
                 </form>
                 <a class="ui basic blue button" href="{{ url_for('login') }}"><i class="sign in icon"></i>Log in</a>
                 <a class="ui basic blue button" href="{{ url_for('signup') }}"><i class="add user icon"></i>Sign up</a>

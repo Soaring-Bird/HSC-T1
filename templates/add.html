@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %} Add Movies - MG Reviews {% endblock %}
+{% block title %} Add {{session['type'].capitalize()}}s - MG Reviews {% endblock %}
 {% block content %}
 
-<h2 class="left"><u>Add Movies</u></h2>
-{% if message %}
-    <p class="{{ category }}">{{ message }}</p>
-{% endif %}
+<h2 class="left"><u>Add {{session['type'].capitalize()}}s</u></h2>
 <div class="ui form">
     <form method="POST">
+        {% if message %}
+            <p class="formtxt {{ category }}">{{ message }}</p>
+        {% endif %}
         <div class="three fields">
             <div class="field">
-                <label>Movie Name</label>
-                <input type="text" name="name" placeholder="Movie Name" required>
+                <label>{{session['type'].capitalize()}} Name</label>
+                <input type="text" name="name" placeholder="{{session['type'].capitalize()}} Name" required>
             </div>
             <div class="field">
                 <label>Genre</label>
@@ -22,7 +22,7 @@
                 <input type="number" name="year" placeholder="Year" required>
             </div>
         </div>
-        <button type="submit">Add Movie</button>
+        <button type="submit">Add {{session['type'].capitalize()}}</button>
     </form>
 </div>
 
