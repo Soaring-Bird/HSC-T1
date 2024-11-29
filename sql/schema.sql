@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     userID INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
     email TEXT,
+    dob DATE,
     password TEXT
 );
 
@@ -21,7 +22,8 @@ CREATE TABLE IF NOT EXISTS movies (
     movieID INTEGER PRIMARY KEY,
     movieName TEXT,
     genre TEXT,
-    year INTEGER
+    year INTEGER,
+    rating TEXT
 );
 
 -- Schema for gReviews
@@ -39,5 +41,6 @@ CREATE TABLE IF NOT EXISTS games (
     gameID INTEGER PRIMARY KEY,
     gameName TEXT,
     genre TEXT,
-    year INTEGER
+    year INTEGER,
+    rating TEXT
 );

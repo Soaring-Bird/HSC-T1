@@ -10,6 +10,7 @@ sqlite3.connect('main.db').executescript(open('sql/schema.sql').read())
 def set_globals(): 
     #Similarly, in future one can modularise this by setting global vars 
     session.setdefault('type', 'movie')
+    session.setdefault('age', 5)
     if session.get('type') == 'movie':
         g.table = 'movies'
         g.review_table = 'mReviews'
@@ -36,7 +37,8 @@ def set_type():
     return redirect(url_for('browse_reviews'))
 
 @app.route('/')
-def index(): return render_template('index.html')
+def index(): 
+    return render_template('index.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -48,8 +50,8 @@ def signup():
         if query_db("SELECT 1 FROM users WHERE username = ?", (username,)):
             return render_template('signup.html', message="Username already exists", category="error")
         hashed_password = sha1(password.encode('utf-8')).hexdigest()
-        query_db("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
-        (username, request.form.get('mail'), hashed_password), commit=True)
+        query_db("INSERT INTO users (username, email, password, dob) VALUES (?, ?, ?, ?)", 
+        (username, request.form.get('mail'), hashed_password, request.form.get('dob')), commit=True)
         return render_template('signup.html', message="Account created successfully! Please log in.", category="success")
     return render_template('signup.html', message=' ')
 
@@ -59,9 +61,12 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         hashed_password = sha1(password.encode('utf-8')).hexdigest()
-        user = query_db("SELECT * FROM users WHERE username = ? AND password = ?", (username, hashed_password))
-        if user:
+        user_data = query_db("""SELECT username, CAST((JULIANDAY('now') - JULIANDAY(dob)) / 365.25 AS INTEGER) AS age 
+                                FROM users WHERE username = ? AND password = ? """, (username, hashed_password))
+        if user_data:
+            username, age = user_data[0]  
             session['username'] = username
+            session['age'] = age
             return render_template('login.html', message="Login successful", category="success")
         else:
             return render_template('login.html', message="Invalid username or password", category="error")
@@ -80,7 +85,7 @@ def browse_reviews():
     elif filter_option == "1hour": time_condition = f"AND r.timestamp >= datetime('now', '-1 hour', 'localtime')"
     elif filter_option == "today": time_condition = f"AND date(r.timestamp) = date('now', 'localtime')"
     else: time_condition == ""
-    items = query_db(f"""SELECT t.{g.id_column}, t.{g.name_column}, t.genre, t.year, MAX(r.timestamp) AS latest_review
+    items = query_db(f"""SELECT t.{g.id_column}, t.{g.name_column}, t.genre, t.year, t.rating, MAX(r.timestamp) AS latest_review
         FROM {g.table} AS t LEFT JOIN {g.review_table} AS r ON t.{g.id_column} = r.{g.id_column} WHERE 1=1 {time_condition}
         GROUP BY t.{g.id_column} ORDER BY latest_review DESC NULLS LAST""")
     return render_template('browse_reviews.html', items=items)
@@ -90,17 +95,18 @@ def add():
     if not session.get('username'): #will be modified for admin update
         return render_template('add.html', message=f'You must be logged in to add a {session["type"]}.', category='error')
     if request.method == 'POST':
-        query_db(f"INSERT INTO {g.table} ({session["type"]}Name, genre, year) VALUES (?, ?, ?)",
-                 (request.form['name'], request.form['genre'], request.form['year']), commit=True)
+        query_db(f"INSERT INTO {g.table} ({session["type"]}Name, genre, year, rating) VALUES (?, ?, ?, ?)",
+                 (request.form['name'], request.form['genre'], request.form['year'], request.form['rating']), commit=True)
         return render_template('add.html', message=f'{session["type"].title()} added!', category='success')
     return render_template('add.html')
 
 @app.route('/review/<int:id>')
 def review(id):
-    title, year, genre = query_db(f"SELECT {g.name_column}, year, genre FROM {g.table} WHERE {g.id_column} = ?", (id,))[0]
+    title, year, genre, rating = query_db(f"SELECT {g.name_column}, year, genre, rating FROM {g.table} WHERE {g.id_column} = ?", (id,))[0]
+    rating_min= {'G': 9, 'PG': 9, 'M': 15, 'MA 15+': 15, 'R 18+': 18, 'X 18+': 18}[rating]
     # so even if they remove blur css property from css, they still can't see the reviews.
-    reviews = query_db(f"SELECT * FROM {g.review_table} WHERE {g.id_column} = ?", (id,)) if session.get('username') else ''
-    return render_template('review.html', main=reviews, heading=f"{title}-{year}-{genre}", 
+    reviews = query_db(f"SELECT * FROM {g.review_table} WHERE {g.id_column} = ?", (id,)) if session.get('username') and session['age']>=rating_min else ''
+    return render_template('review.html', main=reviews, title=title, year=year, genre=genre, rating=rating, age_min=rating_min,
         message=request.args.get('message'), category=request.args.get('category'), item=id)
 
 @app.route('/addreview/<int:id>', methods=['POST'])
