@@ -15,6 +15,7 @@ body {
 
 p {
     padding-top: 10px;
+    white-space: pre-line;
 }
 
 a.nlink:link, a.nlink:visited, a.nlink:hover, a.nlink:active { 

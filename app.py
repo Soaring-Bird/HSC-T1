@@ -8,7 +8,7 @@ sqlite3.connect('main.db').executescript(open('sql/schema.sql').read())
 
 @app.before_request
 def set_globals(): 
-    #Similarly, in future one can modularise this by setting global vars 
+    session.setdefault('admin',False)
     session.setdefault('type', 'movie')
     session.setdefault('age', 5)
     if session.get('type') == 'movie':
@@ -65,6 +65,8 @@ def login():
                                 FROM users WHERE username = ? AND password = ? """, (username, hashed_password))
         if user_data:
             username, age = user_data[0]  
+            if username in ['admin12', 'admin21', 'admin2']:
+                session['admin']=True
             session['username'] = username
             session['age'] = age
             return render_template('login.html', message="Login successful", category="success")
@@ -75,6 +77,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('username', None)  
+    session.pop('admin',None)
     return redirect(url_for('login'))  
 
 @app.route('/browse_reviews')
@@ -119,21 +122,26 @@ def add_review(id):
 
 @app.route('/delete/<int:id>/<int:review_id>')
 def delete_task(id, review_id):
-    review_user = query_db(f"SELECT user FROM {g.review_table} WHERE id=?", (review_id,))
-    if not review_user or review_user[0][0] != session.get('username'):
+    if not session['admin']:
         return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
     query_db(f"DELETE FROM {g.review_table} WHERE id=?", (review_id,), commit=True)
     return redirect(url_for('review', id=id, message="Review deleted!", category="success"))
 
+@app.route('/terminate/<int:id>/<username>')
+def delete_user(id, username):
+    if not session['admin']:
+        return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
+    query_db(f"DELETE FROM users WHERE username=?", (username,), commit=True)
+    query_db(f"UPDATE {g.review_table} SET user=? WHERE user = ?", ('Deleted User', username), commit=True)
+    return redirect(url_for('review', id=id, message="Review deleted!", category="success"))
+
 @app.route('/editreview/<int:id>/<int:review_id>', methods=['POST'])
 def edit_review(id, review_id):
-    if not session.get('username'):
-        return redirect(url_for('review', id=id, message="You must sign in to edit reviews!", category="error"))
     review_user = query_db(f"SELECT user FROM {g.review_table} WHERE id=?", (review_id,))
     if not review_user or review_user[0][0] != session.get('username'):
         return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
     query_db(f"UPDATE {g.review_table} SET comment = ?, stars = ? WHERE id = ?", 
-             (request.form.get('comment'), request.form.get('stars'), review_id), commit=True)
+             (request.form.get('comment')+"\n[Edited]", request.form.get('stars'), review_id), commit=True)
     return redirect(url_for('review', id=id, message="Review updated!", category="success"))
 
 if __name__ == '__main__':
