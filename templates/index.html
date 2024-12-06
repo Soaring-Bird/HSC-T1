@@ -3,13 +3,13 @@
 {% block content %}
 <section>
     <h2>Welcome to MG Reviews</h2>
-    <div class="ui container">
-        <div class="ui warning message">
-           <div class="header">
-              You have no warnings
-           </div>
+    {% if warning %} 
+        <div class="ui container">
+            <div class="ui warning message">
+                <div class="header">{{warning}}</div>
+            </div>
         </div>
-    </div>
+    {% endif %}
     <br>
     <p>Your trusted platform for honest reviews on a wide range of movies and games.</p>
     <a href="{{ url_for('browse_reviews') }}" class="ui button teal">Browse All Reviews</a>

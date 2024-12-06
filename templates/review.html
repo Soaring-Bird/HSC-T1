@@ -51,7 +51,7 @@
                         </div>
                         <p class="review-timestamp">{{ column[5][:-3] }}</p>
                     </div>
-                    {% if (session['username'] == column[1]) or session['admin']==True %}
+                    {% if (session['username'] == column[1]) or session['admin'] == True %}
                         {% if request.args.get('edit') == column[0] | string %}
                             <form action="{{ url_for('edit_review', id=item, review_id=column[0]) }}" method="post">
                                 <p>Please reselect the rating:</p>
@@ -64,13 +64,25 @@
                         {% else %}
                             <p>{{ column[3] }}</p>
                             <div class="extra content">
-                                <a href="{{ url_for('review', id=item, edit=column[0]) }}">Edit <i class="ui pencil alternate icon"></i></a> 
+                                <a href="{{ url_for('review', id=item, edit=column[0]) }}">Edit <i class="ui pencil alternate icon"></i></a>
                                 {% if session['admin'] == True %}
-                                    |  <a href="{{ url_for('delete_task', id=item, review_id=column[0]) }}">&nbsp; Delete Review &nbsp;</a>
-                                    |  <a href="{{ url_for('delete_user', id=item, username=column[1]) }}">&nbsp; Delete User &nbsp;</a>
-                                    |  <a href="{{ url_for('delete_task', id=item, username=column[1]) }}">&nbsp; Warn User &nbsp;</a>
+                                    | <a href="{{ url_for('delete_task', id=item, review_id=column[0]) }}">Delete Review</a>
+                                    | <a href="{{ url_for('delete_user', id=item, username=column[1]) }}">Delete User</a>
+                                    | <a href="{{ url_for('review', id=item, warn_user=column[1]) }}">Warn User</a>
                                 {% endif %}
                             </div>
+                            {% if request.args.get('warn_user') == column[1] %}
+                                <div class="ui segment warning-form">
+                                    <form class="ui form" method="POST" action="{{ url_for('warn_user', id=item, username=column[1]) }}">
+                                        <div class="field">
+                                            <label>Add Warning for {{ column[1] }}</label>
+                                            <textarea name="warning" rows="3" placeholder="Add a warning"></textarea>
+                                        </div>
+                                        <button type="submit" class="ui positive button">Submit</button>
+                                        <a href="{{ url_for('review', id=item) }}" class="ui cancel button">Cancel</a>
+                                    </form>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     {% else %}
                         <p>{{ column[3] }}</p>
@@ -78,6 +90,7 @@
                 </li>
             {% endfor %}
         </ul>
+        
     </div>
 </div>
 {% endblock %}

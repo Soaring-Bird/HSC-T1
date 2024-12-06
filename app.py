@@ -37,8 +37,9 @@ def set_type():
     return redirect(url_for('browse_reviews'))
 
 @app.route('/')
-def index(): 
-    return render_template('index.html')
+def index():
+    warning = query_db("SELECT warning FROM users WHERE username = ?", (session['username'],))[0][0]
+    return render_template('index.html', warning=warning)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -65,7 +66,7 @@ def login():
                                 FROM users WHERE username = ? AND password = ? """, (username, hashed_password))
         if user_data:
             username, age = user_data[0]  
-            if username in ['admin12', 'admin21', 'admin2']:
+            if username in ['admin1', 'admin12', 'admin2']:
                 session['admin']=True
             session['username'] = username
             session['age'] = age
@@ -134,6 +135,13 @@ def delete_user(id, username):
     query_db(f"DELETE FROM users WHERE username=?", (username,), commit=True)
     query_db(f"UPDATE {g.review_table} SET user=? WHERE user = ?", ('Deleted User', username), commit=True)
     return redirect(url_for('review', id=id, message="Review deleted!", category="success"))
+
+@app.route('/warn/<int:id>/<username>', methods=['POST'])
+def warn_user(id, username):
+    if not session.get('admin'):
+        return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
+    query_db("UPDATE users SET warning=? WHERE username=?", ('Warning: '+request.form.get('warning', '').strip(), username), commit=True)
+    return redirect(url_for('review', id=id, message="Warning added successfully.", category="success"))
 
 @app.route('/editreview/<int:id>/<int:review_id>', methods=['POST'])
 def edit_review(id, review_id):
