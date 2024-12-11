@@ -1,0 +1,46 @@
+{
+    "name": "MG Reviews",
+    "short_name": "MG",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "landscape-primary",
+    "description": "A place for movie and game reviews.",
+    "icons": [
+     {
+        "src": "static/images/favicon.png",
+        "type": "image/png",
+        "sizes": "32x32",
+        "purpose": "any"
+     }
+    ],
+    "files": {
+      "sql": {
+        "schema.sql": "sql/schema.sql"
+      },
+      "static": {
+        "css": {
+          "style.css": "static/css/style.css"
+        },
+        "images": {
+          "favicon.png": "static/images/favicon.png"
+        },
+        "js": {
+          "main.js": "static/js/main.js"
+        }
+      },
+      "templates": {
+        "add.html": "templates/add.html",
+        "base.html": "templates/base.html",
+        "browse_reviews.html": "templates/browse_reviews.html",
+        "index.html": "templates/index.html",
+        "login.html": "templates/login.html",
+        "review.html": "templates/review.html",
+        "signup.html": "templates/signup.html"
+      },
+      "root_files": {
+        "app.py": "app.py",
+        "main.db": "main.db"
+      }
+    }
+  }
+  

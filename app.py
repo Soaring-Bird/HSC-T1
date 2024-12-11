@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session,g
+from flask import Flask, render_template, request, redirect, url_for, session,g,send_from_directory
 import sqlite3
 from hashlib import sha1
 app = Flask(__name__)
@@ -61,7 +61,7 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if not session['username'] == 'Guest':
+        if session['username'] != 'Guest':
             return render_template('login.html', message="Error: already logged in.", category="error")
         username = request.form.get('username')
         password = request.form.get('password')
@@ -120,7 +120,7 @@ def review(id):
 
 @app.route('/addreview/<int:id>', methods=['POST'])
 def add_review(id):
-    if session['username'] != 'Guest': #in case added by url
+    if session['username'] == 'Guest': #in case added by url
         return redirect(url_for('review', id=id, message='You must sign in to review!', category='error'))
     query_db(f"INSERT INTO {g.review_table} (user, stars, comment, {g.id_column}) VALUES (?, ?, ?, ?)",
              (session['username'], int(request.form.get('stars')), request.form['comment'], id), commit=True)

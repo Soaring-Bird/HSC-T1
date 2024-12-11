@@ -5,27 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" 
         content="style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; 
-        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;">
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        script-src 'self' https://code.jquery.com https://cdnjs.cloudflare.com; object-src 'none';">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" integrity="sha256-wT6CFc7EKRuf7uyVfi+MQNHUzojuHN2pSw0YWFt2K5E=" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='/images/favicon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <title>{% block title %}MG Reviews{% endblock %}</title>
 </head>
 <body>
     <header class="header">
         <h1><a href="{{ url_for('index') }}" class="nlink">MG Reviews</a></h1>
     </header>
-    <button class="menu-toggle" onclick="togglePopup()"><i class="bars icon"></i></button>
+    <button class="menu-toggle"><i class="bars icon"></i></button>
     <p class="member">{{ session['username'].capitalize()}}</p>
     <div id="popupMenu" class="popup-menu">
         <div class="popup-content">
             <nav>
                 <a class="ui basic blue button" href="{{ url_for('index') }}"><i class="home icon"></i>Home</a>
                 <a class="ui basic blue button" href="{{ url_for('browse_reviews') }}"><i class="file video icon"></i>Browse</a>
-                <a class="ui basic blue button" href="{{ url_for('add') }}"><i class="plus square outline icon"></i>Add</a>
+                {%if session['admin'] == True%}
+                    <a class="ui basic blue button" href="{{ url_for('add') }}"><i class="plus square outline icon"></i>Add</a>
+                {%endif%}
                 <form action="{{ url_for('set_type') }}" method="POST" class="form-button">
                     <button type="submit" class="ui button {% if session['type']=='movie' %}teal{% endif %}" name="type" value="movie">Movies</button>
                 </form> 
