@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="ui segment">
-    {% if not session['username'] %}
+    {% if session['username'] == 'Guest' %}
         <div class="ui dimmer active">
             <h2 class="ui inverted header latest-review">Log in to access content.</h2>
             <a href="{{ url_for('login') }}" class="ui teal button">Log In</a>
@@ -14,7 +14,7 @@
         <h2 class="ui inverted header latest-review">You must be at least {{age_min}} years old.</h2>>
     </div>
     {% endif %}
-    <div class="{% if not session['username'] or session['age'] < age_min %} ui dimmable dimmed blurring segment{% endif %}">
+    <div class="{% if session['username']=='Guest' or session['age'] < age_min %} ui dimmable dimmed blurring segment{% endif %}">
         <h2>{{title}}</h2>
         <div class="ui teal label large">{{genre}} <div class="detail">Genre</div></div>
         <div class="ui teal label large">{{year}} <div class="detail">Year Released</div></div>

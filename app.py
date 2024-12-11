@@ -10,8 +10,9 @@ sqlite3.connect('main.db').executescript(open('sql/schema.sql').read())
 def set_globals(): 
     session.setdefault('admin',False)
     session.setdefault('type', 'movie')
-    session.setdefault('age', 5)
-    if session.get('type') == 'movie':
+    session.setdefault('age', 200)
+    session.setdefault('username', 'Guest')
+    if session['type'] == 'movie':
         g.table = 'movies'
         g.review_table = 'mReviews'
         g.id_column = 'movieID'
@@ -38,7 +39,8 @@ def set_type():
 
 @app.route('/')
 def index():
-    warning = query_db("SELECT warning FROM users WHERE username = ?", (session['username'],))[0][0]
+    result = query_db("SELECT warning FROM users WHERE username = ?", (session['username'],))
+    warning = result[0][0] if result else None
     return render_template('index.html', warning=warning)
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -59,6 +61,8 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        if not session['username'] == 'Guest':
+            return render_template('login.html', message="Error: already logged in.", category="error")
         username = request.form.get('username')
         password = request.form.get('password')
         hashed_password = sha1(password.encode('utf-8')).hexdigest()
@@ -79,15 +83,16 @@ def login():
 def logout():
     session.pop('username', None)  
     session.pop('admin',None)
+    session.pop('age',None)
     return redirect(url_for('login'))  
 
 @app.route('/browse_reviews')
 def browse_reviews():
     filter_option = request.args.get('filter', None)
     time_condition = ""
-    if filter_option == "10mins": time_condition = f"AND r.timestamp >= datetime('now', '-10 minutes', 'localtime')"
-    elif filter_option == "1hour": time_condition = f"AND r.timestamp >= datetime('now', '-1 hour', 'localtime')"
-    elif filter_option == "today": time_condition = f"AND date(r.timestamp) = date('now', 'localtime')"
+    if filter_option == "10mins": time_condition = "AND r.timestamp >= datetime('now', '-10 minutes', 'localtime')"
+    elif filter_option == "1hour": time_condition = "AND r.timestamp >= datetime('now', '-1 hour', 'localtime')"
+    elif filter_option == "today": time_condition = "AND date(r.timestamp) = date('now', 'localtime')"
     else: time_condition == ""
     items = query_db(f"""SELECT t.{g.id_column}, t.{g.name_column}, t.genre, t.year, t.rating, MAX(r.timestamp) AS latest_review
         FROM {g.table} AS t LEFT JOIN {g.review_table} AS r ON t.{g.id_column} = r.{g.id_column} WHERE 1=1 {time_condition}
@@ -96,8 +101,8 @@ def browse_reviews():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
-    if not session.get('username'): #will be modified for admin update
-        return render_template('add.html', message=f'You must be logged in to add a {session["type"]}.', category='error')
+    if not session['admin']: #will be modified for admin update
+        return render_template('add.html', message=f'You must be admin to add a {session["type"]}.', category='error')
     if request.method == 'POST':
         query_db(f"INSERT INTO {g.table} ({session["type"]}Name, genre, year, rating) VALUES (?, ?, ?, ?)",
                  (request.form['name'], request.form['genre'], request.form['year'], request.form['rating']), commit=True)
@@ -107,15 +112,15 @@ def add():
 @app.route('/review/<int:id>')
 def review(id):
     title, year, genre, rating = query_db(f"SELECT {g.name_column}, year, genre, rating FROM {g.table} WHERE {g.id_column} = ?", (id,))[0]
-    rating_min= {'G': 9, 'PG': 9, 'M': 15, 'MA 15+': 15, 'R 18+': 18, 'X 18+': 18}[rating]
+    rating_min= {'G': 9, 'PG': 9, 'PG-13':13,'M': 15, 'MA 15+': 15, 'R 18+': 18, 'X 18+': 18}[rating]
     # so even if they remove blur css property from css, they still can't see the reviews.
-    reviews = query_db(f"SELECT * FROM {g.review_table} WHERE {g.id_column} = ?", (id,)) if session.get('username') and session['age']>=rating_min else ''
+    reviews = query_db(f"SELECT * FROM {g.review_table} WHERE {g.id_column} = ?", (id,)) if session['username']!='Guest' and session['age']>=rating_min else ''
     return render_template('review.html', main=reviews, title=title, year=year, genre=genre, rating=rating, age_min=rating_min,
         message=request.args.get('message'), category=request.args.get('category'), item=id)
 
 @app.route('/addreview/<int:id>', methods=['POST'])
 def add_review(id):
-    if not session.get('username'): #in case added by url
+    if session['username'] != 'Guest': #in case added by url
         return redirect(url_for('review', id=id, message='You must sign in to review!', category='error'))
     query_db(f"INSERT INTO {g.review_table} (user, stars, comment, {g.id_column}) VALUES (?, ?, ?, ?)",
              (session['username'], int(request.form.get('stars')), request.form['comment'], id), commit=True)
@@ -138,7 +143,7 @@ def delete_user(id, username):
 
 @app.route('/warn/<int:id>/<username>', methods=['POST'])
 def warn_user(id, username):
-    if not session.get('admin'):
+    if not session['admin']:
         return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
     query_db("UPDATE users SET warning=? WHERE username=?", ('Warning: '+request.form.get('warning', '').strip(), username), commit=True)
     return redirect(url_for('review', id=id, message="Warning added successfully.", category="success"))
@@ -146,7 +151,7 @@ def warn_user(id, username):
 @app.route('/editreview/<int:id>/<int:review_id>', methods=['POST'])
 def edit_review(id, review_id):
     review_user = query_db(f"SELECT user FROM {g.review_table} WHERE id=?", (review_id,))
-    if not review_user or review_user[0][0] != session.get('username'):
+    if not review_user or review_user[0][0] != session['username']:
         return redirect(url_for('review', id=id, message="Unauthorized action.", category="error"))
     query_db(f"UPDATE {g.review_table} SET comment = ?, stars = ? WHERE id = ?", 
              (request.form.get('comment')+"\n[Edited]", request.form.get('stars'), review_id), commit=True)
