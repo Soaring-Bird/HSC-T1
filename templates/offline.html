@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Offline - MG Reviews{% endblock %}
+{% block content %}
+<div>
+    <i class="cloud slash icon large"></i>
+    <h2>You're Offline</h2>
+    <br>
+</div>
+<p>
+    Some functionality might be unavailable. Please reconnect to the internet.
+</p>
+<a href="{{ url_for('index') }}" class="ui red button">
+    Go to Home
+</a>
+{% endblock %}

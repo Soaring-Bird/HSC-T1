@@ -6,6 +6,14 @@ app.secret_key = 'your_secret_key_here'
 
 sqlite3.connect('main.db').executescript(open('sql/schema.sql').read())
 
+@app.route('/offline.html')
+def offline():
+    return render_template('offline.html')
+
+@app.route('/sw.js')
+def serve_service_worker():
+    return send_from_directory('.', 'sw.js')
+    
 @app.before_request
 def set_globals(): 
     session.setdefault('admin',False)
