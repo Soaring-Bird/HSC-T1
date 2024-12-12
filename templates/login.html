@@ -1,15 +1,19 @@
 {% extends "base.html" %}
-
 {% block title %}Login - MG Reviews{% endblock %}
-
 {% block content %}
 <div class="ui padded center aligned text ">
+  <!-- Page heading -->
   <h1 class="ui header">Log In</h1>
+  
+  <!-- Displays a message if one exists, with its category for styling -->
   {% if message %}
     <p class="{{ category }}">{{ message }}</p>
   {% endif %}
   <br>
+  
+  <!-- Form for user login -->
   <form method="POST" action="{{ url_for('login') }}">
+    <!-- Input field for username -->
     <div class="field">
       <div class="ui left icon input">
         <i class="ui user outline icon input"></i>
@@ -17,6 +21,7 @@
       </div>
     </div>
     <br>
+    <!-- Input field for password -->
     <div class="field">
       <div class="ui left icon input">
         <i class="lock icon"></i>
@@ -24,10 +29,12 @@
       </div>
     </div>
     <br>
+    <!-- Login button -->
     <div class="actions">
       <button class="ui large teal button" type="submit">Log in</button>
     </div>
     <br>
+    <!-- Redirect link to the signup page -->
     <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
   </form>
 </div>

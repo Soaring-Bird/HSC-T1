@@ -2,14 +2,17 @@
 {% block title %}Browse Reviews - MG Reviews{% endblock %}
 {% block content %}
 
+<!-- Dropdown filter button with options to filter reviews based on time -->
 <div class="ui labeled teal icon top right pointing dropdown button">
     <i class="filter icon"></i>
     <span class="text">Filter {{session['type'].capitalize()}}s</span>
     <div class="menu">
+        <!-- Dropdown header with an icon -->
         <div class="header">
             <i class="calendar icon"></i>
             Filter By Latest Review
         </div>
+        <!-- Filter options with corresponding links -->
         <a class="item" href="{{ url_for('browse_reviews', filter='10mins') }}">
             <i class="olive circle icon"></i> Last 10 mins
         </a>
@@ -24,9 +27,12 @@
         </a>
     </div>
 </div>
+<!-- Page heading that dynamically displays the type of content (Movies or Games) -->
 <h2 class="left"><u>All {{session['type'].capitalize()}}s</u></h2>
+<!-- List of reviews displayed dynamically based on the items provided -->
 <ul class="review-list">
     {% for ID, title, genre, year, rating, latest_review in items %}
+        <!-- Link wrapping each review item to redirect to the review page (nlink is for no underlines)-->
         <a href="{{ url_for('review', id=ID) }}" class="nlink">
             <li class="mg-item">
                 <h3 class="ui dividing blocked header"><strong>{{title}}</strong></h3>

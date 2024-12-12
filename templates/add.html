@@ -2,9 +2,12 @@
 {% block title %} Add {{session['type'].capitalize()}}s - MG Reviews {% endblock %}
 {% block content %}
 
+<!-- Heading displaying the type of item being added -->
 <h2 class="left"><u>Add {{session['type'].capitalize()}}s</u></h2>
+<!-- Form to add a new movie or game -->
 <div class="ui form">
     <form method="POST">
+        <!-- Display a message (e.g., success or error) if one exists in the context -->
         {% if message %}
             <p class="formtxt {{ category }}">{{ message }}</p>
         {% endif %}
@@ -19,11 +22,15 @@
             </div>
             <div class="field">
                 <label>Year</label>
+                <!-- Default value is set to 2000 for convenience -->
                 <input type="number" name="year" placeholder="Year" value="2000" required>
             </div>
+
+            <!-- Dropdown to select a rating -->
             <div class="field">
                 <label>Rating</label>
                 <select name="rating" placeholder="Rating" required>
+                    <!-- Different rating options based on standard movie/game classifications -->
                     <option value="G">G</option>
                     <option value="PG">PG</option>
                     <option value="PG-13">PG-13</option>
@@ -34,6 +41,7 @@
                 </select>
             </div>
         </div>
+        <!-- Submit button to add the item -->
         <button type="submit">Add {{session['type'].capitalize()}}</button>
     </form>
 </div>

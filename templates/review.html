@@ -3,28 +3,36 @@
 {% block content %}
 
 <div class="ui segment">
+    <!-- Display a message if the user is a Guest -->
     {% if session['username'] == 'Guest' %}
         <div class="ui dimmer active">
             <h2 class="ui inverted header latest-review">Log in to access content.</h2>
             <a href="{{ url_for('login') }}" class="ui teal button">Log In</a>
             <a href="{{ url_for('signup') }}" class="ui teal button">Sign Up</a>
         </div>
+    <!-- Restrict access if the user is below the minimum age -->
     {% elif session['age'] < age_min %}
-    <div class="ui dimmer active">
-        <h2 class="ui inverted header latest-review">You must be at least {{age_min}} years old.</h2>>
-    </div>
+        <div class="ui dimmer active">
+            <h2 class="ui inverted header latest-review">You must be at least {{age_min}} years old.</h2>
+        </div>
     {% endif %}
+
+    <!-- Display the content if the user is not a Guest and meets the age requirement -->
     <div class="{% if session['username']=='Guest' or session['age'] < age_min %} ui dimmable dimmed blurring segment{% endif %}">
+        <!-- Display movie or game details -->
         <h2>{{title}}</h2>
         <div class="ui teal label large">{{genre}} <div class="detail">Genre</div></div>
         <div class="ui teal label large">{{year}} <div class="detail">Year Released</div></div>
         <div class="ui teal label large">{{rating}} <div class="detail">Rating</div></div>
         <br><br><hr>
+        <!-- Form for adding a review -->
         <p class="review-prompt">What did you think of it?</p>
         <form action="{{ url_for('add_review', id=item) }}" method="post" class="ui form">
             {% if message %}
+                <!-- Display form messages (e.g., errors or success) -->
                 <p class="formtxt {{ category }}">{{ message }}</p>
             {% endif %}
+            <!-- Rating stars selection -->
             <p class="formtxt">Select a star rating here</p>
             <div class="my-rating">
                 <input type="radio" name="stars" id="star5" value="5" required="required"><label for="star5">★</label>
@@ -33,26 +41,33 @@
                 <input type="radio" name="stars" id="star2" value="2"><label for="star2">★</label>
                 <input type="radio" name="stars" id="star1" value="1"><label for="star1">★</label>
             </div>
+            <!-- Textarea for adding comments -->
             <div class="field">
                 <p class="formtxt">Discussion</p>
                 <textarea name="comment" placeholder="Comment" class="comment-textarea"></textarea>
             </div>
+            <!-- Submit button -->
             <button type="submit">Add Review</button>
         </form>
         <hr>
+        <!-- Section for displaying critics' reviews -->
         <h3>Critics Reviews</h3>
         <ul>
             {% for column in main %}
                 <li class="item review-item">
                     <div class="review-header">
+                        <!-- Display user info and review rating -->
                         <div class="ui label user-label">
                             <i class="user icon"></i> {{ column[1] }}
                             <p class="review-rating">{{ '★' * (column[2] | int) }}{{ '☆' * (5 - (column[2] | int)) }}</p>
                         </div>
+                        <!-- Review timestamp -->
                         <p class="review-timestamp">{{ column[5][:-3] }}</p>
                     </div>
+                    <!-- Edit options for review -->
                     {% if (session['username'] == column[1]) or session['admin'] == True %}
                         {% if request.args.get('edit') == column[0] | string %}
+                            <!-- Edit review form -->
                             <form action="{{ url_for('edit_review', id=item, review_id=column[0]) }}" method="post">
                                 <p>Please reselect the rating:</p>
                                 <div class="ui star rating" data-rating="0" data-max-rating="5"></div>
@@ -62,9 +77,12 @@
                                 <a href="{{ url_for('review', id=item) }}">Cancel</a>
                             </form>
                         {% else %}
+                            <!-- Display review content -->
                             <p>{{ column[3] }}</p>
                             <div class="extra content">
+                                <!-- Links for editing, deleting, and warning users -->
                                 <a href="{{ url_for('review', id=item, edit=column[0]) }}">Edit <i class="ui pencil alternate icon"></i></a>
+                                <!-- Links for admins specific-->
                                 {% if session['admin'] == True %}
                                     | <a href="{{ url_for('delete_task', id=item, review_id=column[0]) }}">Delete Review</a>
                                     | <a href="{{ url_for('delete_user', id=item, username=column[1]) }}">Delete User</a>
@@ -72,6 +90,7 @@
                                 {% endif %}
                             </div>
                             {% if request.args.get('warn_user') == column[1] %}
+                                <!-- Warning form for admins -->
                                 <div class="ui segment warning-form">
                                     <form class="ui form" method="POST" action="{{ url_for('warn_user', id=item, username=column[1]) }}">
                                         <div class="field">
@@ -85,12 +104,12 @@
                             {% endif %}
                         {% endif %}
                     {% else %}
+                        <!-- Display review if no edit privileges -->
                         <p>{{ column[3] }}</p>
                     {% endif %}
                 </li>
             {% endfor %}
         </ul>
-        
     </div>
 </div>
 {% endblock %}

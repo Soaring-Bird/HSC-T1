@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Sign Up - MG Reviews{% endblock %}
-
 {% block content %}
-
 <div class="ui padded center aligned text">
   <h1 class="ui header">Sign Up</h1>
+  <!-- Displays any message passed to the template-->
   {% if message %}
     <p class="{{ category }}">{{ message }}</p>
   {% endif %}
+  <!-- Signup form -->
   <form method="POST">
+    <!-- Username input field -->
     <div class="field">
       <div class="ui left icon input">
         <i class="ui user outline icon"></i>
@@ -16,6 +17,7 @@
       </div>
     </div>
     <br>
+    <!-- Email input field -->
     <div class="field">
       <div class="ui left icon input">
         <i class="ui mail icon"></i>
@@ -23,6 +25,7 @@
       </div>
     </div>
     <br>
+    <!-- Password input field -->
     <div class="field">
       <div class="ui left icon input">
         <i class="lock icon"></i>
@@ -30,6 +33,7 @@
       </div>
     </div>
     <br>
+    <!-- Password confirmation input field -->
     <div class="field">
       <div class="ui left icon input">
         <i class="lock icon"></i>
@@ -37,16 +41,19 @@
       </div>
     </div>
     <br>
+    <!-- Date of Birth input field -->
     <div class="field">
       <div class="ui left icon input">
         <input type="date" name="dob" autofocus="true" class="dob input-field date" required>
       </div>
     </div>
     <br>
+    <!-- Signup button -->
     <div class="actions">
       <button class="ui large teal button" type="submit">Sign Up</button>
     </div>
   </form>
+  <!-- Link to log in page for existing users -->
   <p>Have an account? <a href="{{ url_for('login') }}">Log In</a></p>
 </div>
 
