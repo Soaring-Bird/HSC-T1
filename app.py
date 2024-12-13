@@ -7,8 +7,8 @@ app.secret_key = "wo^3udhwekjfq34hgf&/3rohf3ed"
 # Initialize the SQLite database by executing the schema script during startup
 sqlite3.connect('main.db').executescript(open('sql/schema.sql').read())
 
-# Route to handle offline access - serves an offline HTML page, has to be .html as doesn't work without for sm reason (pain)
-@app.route('/offline.html')
+# Route to handle offline access 
+@app.route('/offline')
 def offline():
     return render_template('offline.html')
 
