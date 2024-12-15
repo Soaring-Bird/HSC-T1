@@ -59,7 +59,7 @@
                         <!-- Display user info and review rating -->
                         <div class="ui label user-label">
                             <i class="user icon"></i> {{ column[1] }}
-                            <p class="review-rating">{{ '★' * (column[2] | int) }}{{ '☆' * (5 - (column[2] | int)) }}</p>
+                            <p class="review-rating">{{ '★' * (column[2] | int) }}{{ '☆' * (5 - (column[2] | int)) }}</p> 
                         </div>
                         <!-- Review timestamp -->
                         <p class="review-timestamp">{{ column[5][:-3] }}</p>
@@ -86,10 +86,10 @@
                                 {% if session['admin'] == True %}
                                     | <a href="{{ url_for('delete_task', id=item, review_id=column[0]) }}">Delete Review</a>
                                     | <a href="{{ url_for('delete_user', id=item, username=column[1]) }}">Delete User</a>
-                                    | <a href="{{ url_for('review', id=item, warn_user=column[1]) }}">Warn User</a>
+                                    | <a href="{{ url_for('review', id=item, warn_user=column[1]) }}">Warn User</a> 
                                 {% endif %}
                             </div>
-                            {% if request.args.get('warn_user') == column[1] %}
+                            {% if request.args.get('warn_user') == column[1] %}<!--IF warn user link is clicked it displays this-->
                                 <!-- Warning form for admins -->
                                 <div class="ui segment warning-form">
                                     <form class="ui form" method="POST" action="{{ url_for('warn_user', id=item, username=column[1]) }}">
